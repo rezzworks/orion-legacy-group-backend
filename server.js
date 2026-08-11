@@ -1,3 +1,4 @@
+const net = require("net");
 const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
@@ -12,6 +13,9 @@ const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: Number(process.env.EMAIL_PORT),
   secure: true,
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
+  socketTimeout: 15000,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
@@ -73,4 +77,41 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+app.get("/api/smtp-test", (req, res) => {
+  const socket = new net.Socket();
+
+  socket.setTimeout(10000);
+
+  socket.connect(465, "mail.orionlegacygroup.org", () => {
+    console.log("SMTP TCP connection successful");
+
+    socket.destroy();
+
+    res.json({
+      success: true,
+      message: "Render can connect to SMTP port 465",
+    });
+  });
+
+  socket.on("timeout", () => {
+    console.error("SMTP TCP connection timed out");
+
+    socket.destroy();
+
+    res.status(500).json({
+      success: false,
+      message: "SMTP TCP connection timed out",
+    });
+  });
+
+  socket.on("error", (error) => {
+    console.error("SMTP TCP connection failed:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  });
 });
