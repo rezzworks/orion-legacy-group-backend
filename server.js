@@ -84,14 +84,14 @@ app.get("/api/smtp-test", (req, res) => {
 
   socket.setTimeout(10000);
 
-  socket.connect(465, "mail.orionlegacygroup.org", () => {
+  socket.connect(587, "mail.orionlegacygroup.org", () => {
     console.log("SMTP TCP connection successful");
 
     socket.destroy();
 
     res.json({
       success: true,
-      message: "Render can connect to SMTP port 465",
+      message: "Render can connect to SMTP port 587",
     });
   });
 
