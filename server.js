@@ -12,7 +12,7 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: Number(process.env.EMAIL_PORT),
-  secure: true,
+  secure: false,
   connectionTimeout: 15000,
   greetingTimeout: 15000,
   socketTimeout: 15000,
@@ -84,14 +84,14 @@ app.get("/api/smtp-test", (req, res) => {
 
   socket.setTimeout(10000);
 
-  socket.connect(465, "gator4095.hostgator.com", () => {
+  socket.connect(26, "gator4095.hostgator.com", () => {
     console.log("SMTP TCP connection successful");
 
     socket.destroy();
 
     res.json({
       success: true,
-      message: "Render can connect to gator4095.hostgator.com on port 465",
+      message: "Render can connect to gator4095.hostgator.com on port 26",
     });
   });
 
