@@ -115,3 +115,24 @@ app.get("/api/smtp-test", (req, res) => {
     });
   });
 });
+
+app.get("/api/public-ip", async (req, res) => {
+  try {
+    const response = await fetch("https://api.ipify.org?format=json");
+    const data = await response.json();
+
+    console.log("Render public IP:", data.ip);
+
+    res.json({
+      success: true,
+      ip: data.ip,
+    });
+  } catch (error) {
+    console.error("Unable to determine public IP:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Unable to determine public IP",
+    });
+  }
+});
